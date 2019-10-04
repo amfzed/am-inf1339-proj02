@@ -1,0 +1,80 @@
+<html>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/p5.js"></script>
+    
+    <title>A's INF1339 Project 2</title>
+    
+    <style>
+        body {
+            font: 1em sans-serif;
+        }
+        h1 {
+            font: 2em;
+        }
+        .test_class {
+            font: 1.1em;
+            color: #666;
+        }
+    </style>
+    
+    <script>
+        var api_key = 'tbjbAz5ojAVHsBXMaAQcNmaH2TYWpr0m'
+        var parameters = {'q': 'otters', 'api-key': api_key};
+        var article_count = 0;
+        
+        function setup() {
+             // don't draw anything
+             noCanvas();
+             
+             // call the API and display the retrieved data
+             var nyt_api = 'https://api.nytimes.com/svc/search/v2/articlesearch.json';
+             var endpt = buildEndpoint(nyt_api, parameters)
+             loadJSON(endpt, displayData);
+        }
+        
+        function buildEndpoint(url, params) {
+            // build the URL endpoint programmatically to make it easier to play with API calls
+            //expect params to be an object
+            var endpoint = url + '?';
+            var param_pairs = Object.entries(params);
+            
+            // add the first parameter pair to URL
+            endpoint += `${param_pairs[0][0]}=${param_pairs[0][1]}`;
+            
+            // add any additional parameter pairs to URL
+            for (let [k, v] of param_pairs.slice(1)) {
+                endpoint += `&${k}=${v}`;
+            }
+
+            return(endpoint);
+        }
+        
+        function displayData(data) {
+            // add article information from the API response to the page
+            var articles = data.response.docs;
+            for (var i=0; i < articles.length; i++) {
+                article_count++;
+                addToPage(articles[i]);
+            }
+            
+            // pop some metadata in up top
+            document.getElementById('topic').innerHTML = parameters.q;
+            document.getElementById('count').innerHTML = article_count;
+        }
+        
+        function addToPage(content) {
+            // for now, just get the headline and add it to the page
+            var headline = document.createElement('li');
+            document.getElementById("article_list").appendChild(headline);
+            headline.innerHTML = `<h4>${content.headline.main}</h4>`;
+        }
+    </script>
+
+<head>
+<body>
+    <h1>API Project</h1>
+    <p id="sentinel" class="test_class">Now showing <span id="count"></span> articles on <span id="topic"></span>.</p>
+    <ol id="article_list">
+    </ol>
+</body>
+</html>
