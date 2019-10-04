@@ -20,6 +20,7 @@
     <script>
         var api_key = 'tbjbAz5ojAVHsBXMaAQcNmaH2TYWpr0m'
         var parameters = {'q': 'otters', 'api-key': api_key};
+        var article_count = 0;
         
         function setup() {
              // don't draw anything
@@ -52,6 +53,7 @@
             // add article information from the API response to the page
             var articles = data.response.docs;
             for (var i=0; i < articles.length; i++) {
+                article_count++;
                 addToPage(articles[i]);
             }
             
